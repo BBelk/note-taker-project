@@ -2,20 +2,16 @@ const api = require('express').Router();
 const fs = require('fs');
 const express = require('express');
 api.use(express.json());
-const {readFromFile, readAndAppend} = require('../helpers/fsUtils');
+const {readFromFile, readAndAppend, writeToFile} = require('../helpers/fsUtils');
 const uuid = require('../helpers/uuid');
+const { json } = require('express');
 
 api.get('/notes', (req, res) => {
     if(req.method == "GET"){
-        console.log("GETTEM");
+        // console.log("GETTEM");
         readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)));
     }
-    if(req.method == "POST"){
-        console.log("POSTEM");
-    }
-
-    // console.log(res);
-    });
+});
 
 api.post('/notes', (req, res) => {
 console.info(`${req.method} request received to add a note`);
@@ -37,15 +33,20 @@ if (req.body) {
 });
 
 
-api.delete('/notes/:id', (req, res) => {
+api.delete('/notes/:id', async (req, res) => {
     console.info(`${req.method} request received to delete a note`);
     
     const toDelete = req.params.id;
     console.log("TO DELETE " + toDelete);
-    let getFile =  readFromFile('./db/db.json');
-    // delete './db/db.json'[toDelete];
-    delete getFile[toDelete];
+    let getFile = await readFromFile('./db/db.json');
+    getFile = JSON.parse(getFile);
+
+    getFile = getFile.filter(x => x.id !== toDelete);
+
+    // delete getFile[toDelete];
     console.log(getFile);
+    writeToFile('./db/db.json', getFile);
+    // console.log(getFile2);
 
     // const removeById = (arr, id) => {
     //     const requiredIndex = arr.findIndex(el => {

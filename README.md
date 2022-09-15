@@ -17,4 +17,4 @@
 
   ## Visuals
 
- ![Alt text](.Assets\Note-Taker-Image.png "Heroku Page Image")
+ ![Alt text](/Assets/Note-Taker-Image.png "Heroku Page Image")
